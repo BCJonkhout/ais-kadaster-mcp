@@ -6,3 +6,5 @@ __pycache__/
 
 # Output from kadaster.py
 kadaster_dataset/
+kadaster_dataset2/
+kadaster_dataset3/

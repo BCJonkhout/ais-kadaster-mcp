@@ -44,8 +44,13 @@ Defaults live at the top of `kadaster.py` (e.g. `OUTPUT_DIR`, `DELAY_BETWEEN_REQ
 You can override defaults with env vars:
 
 ```bash
-KADASTER_OUTPUT_DIR=out/ \
-KADASTER_SPARQL_ENDPOINT="https://data.labs.kadaster.nl/_api/datasets/kadaster/kkg/services/kkg/sparql" \
+KADASTER_OUTPUT_DIR=kadaster_dataset \
+KADASTER_BASE_API_URL=https://data.labs.kadaster.nl/_api \
+KADASTER_SPARQL_ENDPOINT=https://data.labs.kadaster.nl/_api/datasets/kadaster/kkg/services/kkg/sparql \
+KADASTER_SPARQL_REFERRER=https://data.labs.kadaster.nl/kadaster/kkg/sparql \
+KADASTER_DELAY_BETWEEN_REQUESTS=0.1 \
+KADASTER_TIMEOUT_SECONDS=10 \
+KADASTER_MAX_WORKERS=3 \
 uv run kadaster-extract
 ```
 
@@ -55,7 +60,7 @@ If the SPARQL endpoint requires an authenticated browser session, you can also p
 KADASTER_COOKIE="key=value; other=thing" uv run kadaster-extract
 ```
 
-Execution uses `KADASTER_TIMEOUT_SECONDS` (default `10`) and `KADASTER_MAX_WORKERS` (default `10`).
+Execution uses `KADASTER_TIMEOUT_SECONDS` (default `10`) and `KADASTER_MAX_WORKERS` (default `3`).
 
 ## Dev (optional)
 

@@ -17,7 +17,7 @@ USER_AGENT = os.getenv(
 )
 DELAY_BETWEEN_REQUESTS = float(os.getenv("KADASTER_DELAY_BETWEEN_REQUESTS", "0.1"))
 REQUEST_TIMEOUT_SECONDS = float(os.getenv("KADASTER_TIMEOUT_SECONDS", "10"))
-MAX_WORKERS = int(os.getenv("KADASTER_MAX_WORKERS", "10"))
+MAX_WORKERS = int(os.getenv("KADASTER_MAX_WORKERS", "3"))
 SPARQL_ENDPOINT = os.getenv(
     "KADASTER_SPARQL_ENDPOINT",
     "https://data.labs.kadaster.nl/_api/datasets/kadaster/kkg/services/kkg/sparql",
@@ -56,6 +56,26 @@ def get_thread_session():
         session = requests.Session()
         _thread_local.session = session
     return session
+
+
+def _config_value(name, value):
+    source = "env" if name in os.environ else "default"
+    return f"{name}={value!s} ({source})"
+
+
+def print_effective_config():
+    print("--- Effective configuration ---")
+    print(_config_value("KADASTER_BASE_API_URL", BASE_API_URL))
+    print(_config_value("KADASTER_OUTPUT_DIR", OUTPUT_DIR))
+    print(_config_value("KADASTER_DELAY_BETWEEN_REQUESTS", DELAY_BETWEEN_REQUESTS))
+    print(_config_value("KADASTER_TIMEOUT_SECONDS", REQUEST_TIMEOUT_SECONDS))
+    print(_config_value("KADASTER_MAX_WORKERS", MAX_WORKERS))
+    print(_config_value("KADASTER_SPARQL_ENDPOINT", SPARQL_ENDPOINT))
+    print(_config_value("KADASTER_SPARQL_REFERRER", SPARQL_REFERRER))
+    print(_config_value("KADASTER_USER_AGENT", USER_AGENT))
+    cookie_source = "env" if "KADASTER_COOKIE" in os.environ else "unset"
+    cookie_state = "set" if KADASTER_COOKIE else "not set"
+    print(f"KADASTER_COOKIE={cookie_state} ({cookie_source})")
 
 
 def setup_environment():
@@ -185,16 +205,17 @@ def execute_sparql(session, sparql_query, query_id):
             timeout=REQUEST_TIMEOUT_SECONDS,
         )
         response.raise_for_status()
-        try:
+        content_type = (response.headers.get("content-type") or "").lower()
+        if "json" in content_type:
             return response.json()
-        except ValueError:
-            text = response.text or ""
-            return {
-                "error": "Non-JSON response from SPARQL endpoint",
-                "status_code": response.status_code,
-                "content_type": response.headers.get("content-type"),
-                "text_sample": text[:10000],
-            }
+
+        text = response.text or ""
+        return {
+            "result_format": "turtle" if "turtle" in content_type else "text",
+            "status_code": response.status_code,
+            "content_type": response.headers.get("content-type"),
+            "text_sample": text[:10000],
+        }
     except requests.exceptions.RequestException as e:
         return {"error": f"Execution failed: {str(e)}"}
 
@@ -260,6 +281,7 @@ def process_catalog_item(item):
 
 def main():
     session = requests.Session()
+    print_effective_config()
     setup_environment()
 
     page = 1

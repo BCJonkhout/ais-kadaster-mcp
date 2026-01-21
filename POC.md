@@ -11,6 +11,7 @@ This POC feeds into a Model Context Protocol (MCP) server/tooling so that an age
 - Retrieve curated few-shot examples derived from the scraped query set.
 - Execute predefined “safe” SPARQL queries.
 - Execute generated SPARQL against the single chosen endpoint for evaluation.
+- Provide a clickable Kadaster Labs link that opens the SPARQL UI with the query preloaded/executed, so humans can use the built-in visual layout (especially for geometry-heavy results).
 
 ## Steps
 
