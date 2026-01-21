@@ -23,6 +23,12 @@ Create a local virtualenv and install dependencies:
 uv sync
 ```
 
+Optional: copy `.env.example` to `.env` and run with:
+
+```bash
+uv run --env-file .env kadaster-extract
+```
+
 ## Run
 
 Run the script directly:
@@ -37,11 +43,27 @@ Or run via the installed console script:
 uv run kadaster-extract
 ```
 
-Output is written to `kadaster_dataset3/` (gitignored).
+Output is written to `kadaster_dataset/` (gitignored).
 
 ## Configuration
 
-Defaults live at the top of `kadaster.py` (e.g. `OUTPUT_DIR`, `DELAY_BETWEEN_REQUESTS`, `GLOBAL_EXECUTION_ENDPOINT`).
+Defaults live at the top of `kadaster.py` (e.g. `OUTPUT_DIR`, `DELAY_BETWEEN_REQUESTS`, `SPARQL_ENDPOINT`).
+
+You can override defaults with env vars:
+
+```bash
+KADASTER_OUTPUT_DIR=out/ \
+KADASTER_SPARQL_ENDPOINT="https://data.labs.kadaster.nl/_api/datasets/kadaster/kkg/services/kkg/sparql" \
+uv run kadaster-extract
+```
+
+If the SPARQL endpoint requires an authenticated browser session, you can also pass cookies:
+
+```bash
+KADASTER_COOKIE="key=value; other=thing" uv run kadaster-extract
+```
+
+Execution uses `KADASTER_TIMEOUT_SECONDS` (default `10`) and `KADASTER_MAX_WORKERS` (default `10`).
 
 ## Dev (optional)
 
@@ -50,3 +72,19 @@ Lint:
 ```bash
 uv run ruff check .
 ```
+
+## Notebook
+
+The repo includes an analysis notebook at `notebooks/kadaster_insights.ipynb`.
+
+```bash
+uv sync
+uv run python -m ipykernel install --user --name ais-kadaster-mcp --display-name "ais-kadaster-mcp"
+uv run python -m notebook
+```
+
+## Notes
+
+See `POC.md` for the current proof-of-concept approach.
+
+This work is intended to become an MCP-backed workflow that can be invoked from an agent client such as `gemini-cli`.
