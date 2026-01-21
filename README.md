@@ -2,6 +2,23 @@
 
 Small Python repo containing `scripts/kadaster.py`, which crawls the Kadaster Labs query catalog, fetches query details, optionally executes the SPARQL, and writes JSON examples to disk.
 
+## Workflow
+
+```mermaid
+flowchart TD
+  A["1) Scrape + Execute<br/>`uv run kadaster-extract`<br/>writes `data/kadaster_dataset/*.json`"] --> B["2) Bundle + Compact<br/>`python3 scripts/collect_non_empty.py` -> `data/kadaster_non_empty_results.json`<br/>`python3 scripts/collect_rdf.py` -> `data/kadaster_rdf_results.json`"]
+  B --> C["3) Insights Notebook<br/>`notebooks/kadaster_insights.ipynb`<br/>metrics: errors/empty/non-empty/rdf"]
+  B --> D["4) Few-shot Judge Notebook<br/>`notebooks/fewshot_judge.ipynb`<br/>heuristics + OpenAI judge -> Top-K"]
+  D --> E["5) Curated Few-shots<br/>writes `data/fewshot_topk.json`"]
+  E --> F["6) MCP Server (FastMCP)<br/>`uv run --env-file .env python scripts/mcp_server.py`<br/>dynamic example selection + truncated tool outputs"]
+  F --> G["MCP Clients (e.g. gemini-cli)<br/>use prompt + tools to generate/execute SPARQL"]
+```
+
+Why dynamic selection matters:
+- Including *all* few-shot examples would exceed ~4,000,000 tokens of context.
+- Even ~10 examples can be ~400,000 tokens (expensive and slow).
+- The MCP server therefore selects only the most relevant examples (3) per request and truncates tool outputs.
+
 ## Prereqs
 
 - Python (recommended: `3.11+`, see `.python-version`)
@@ -27,6 +44,16 @@ To build compacted bundles used by the notebooks:
 python3 scripts/collect_non_empty.py
 python3 scripts/collect_rdf.py
 ```
+
+## MCP Server
+
+Run the MCP server (stdio) for use with MCP clients (e.g. `gemini-cli`):
+
+```bash
+uv run --env-file .env python scripts/mcp_server.py
+```
+
+The server keeps context small by dynamically selecting the most relevant few-shot examples for each request and truncating tool outputs (rows + long values).
 
 ## Run
 
