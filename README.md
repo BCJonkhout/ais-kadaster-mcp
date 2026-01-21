@@ -55,6 +55,38 @@ uv run --env-file .env python scripts/mcp_server.py
 
 The server keeps context small by dynamically selecting the most relevant few-shot examples for each request and truncating tool outputs (rows + long values).
 
+## Gemini CLI (client)
+
+Check the CLI is available:
+
+```bash
+bunx @google/gemini-cli --help
+```
+
+If you prefer npm:
+
+```bash
+npx -y @google/gemini-cli --help
+```
+
+Then run the MCP server (above) and configure `gemini-cli` to use the MCP stdio server command:
+
+`uv run --env-file .env python scripts/mcp_server.py`
+
+You can register the MCP server directly into the project config (no `settings.json` required):
+
+```bash
+bunx gemini mcp add ais-kadaster-mcp "uv run --env-file .env python scripts/mcp_server.py" --timeout 30000
+```
+
+(npm alternative)
+
+```bash
+npx -y @google/gemini-cli mcp add ais-kadaster-mcp "uv run --env-file .env python scripts/mcp_server.py" --timeout 30000
+```
+
+If you previously created `settings.json`, you can ignore/delete it when using `gemini mcp add`.
+
 ## Run
 
 Run the script directly:

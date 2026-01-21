@@ -10,3 +10,4 @@ scripts/__init__.py
 scripts/collect_non_empty.py
 scripts/collect_rdf.py
 scripts/kadaster.py
+scripts/mcp_server.py

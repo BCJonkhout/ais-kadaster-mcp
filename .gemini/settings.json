@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "ais-kadaster-mcp": {
+      "command": "uv run --env-file .env python scripts/mcp_server.py --timeout 30000",
+      "args": []
+    }
+  }
+}
