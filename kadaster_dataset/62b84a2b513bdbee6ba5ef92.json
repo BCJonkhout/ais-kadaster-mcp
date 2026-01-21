@@ -1,0 +1,18 @@
+{
+    "meta": {
+        "id": "62b84a2b513bdbee6ba5ef92",
+        "name": "igo-risicoobjecten-in-radius",
+        "description": "",
+        "owner": "Data Science Team (DST)",
+        "visualization": "geo"
+    },
+    "prompt_context": {
+        "prefixes": [],
+        "dataset_name": "Unknown"
+    },
+    "input_natural_language": "",
+    "output_sparql": "prefix bif: <http://www.openlinksw.com/schemas/bif#>\nprefix geo: <http://www.opengis.net/ont/geosparql#>\nprefix kad: <https://data.kkg.kadaster.nl/kad/model/def/>\nprefix sor: <https://data.kkg.kadaster.nl/sor/model/def/>\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nprefix skos: <http://www.w3.org/2004/02/skos/core#>\nselect\n  ?gebouw\n  (sample(?vlak) as ?vlak)\n  (strdt(concat(\n     '<p>Gebruiksdoelen</p>',\n     '<ul>',group_concat(concat('<li>',str(?gebruiksdoel),': ',str(?aantal),'</li>');separator=''),'</ul>',\n     '<p>BRT gebouwtypes</dt><dd>',str(sample(?types)),'</p>'),rdf:HTML) as ?vlakLabel)\n{\n  {\n    select\n      ?gebouw\n      ?gebruiksdoel\n      (count(*) as ?aantal)\n      (sample(?vlak) as ?vlak)\n      (group_concat(distinct str(?type);separator=', ') as ?types)\n    {\n      {\n        select distinct ?verblijfsobject {\n          {\n            select ?punt1 {\n              ?nummeraanduiding\n                a sor:Nummeraanduiding;\n                sor:huisnummer ?huisnummer;\n                sor:postcode ?postcode.\n              ?verblijfsobject0\n                a sor:Verblijfsobject;\n                sor:hoofdadres ?nummeraanduiding;\n                geo:hasGeometry/geo:asWKT ?punt1.\n            }\n            limit 1\n          }\n          ?verblijfsobject\n            a sor:Verblijfsobject;\n            geo:hasGeometry/geo:asWKT ?punt2.\n            filter(bif:st_within(?punt1, ?punt2, ?radius))\n        }\n        limit 10000\n      }\n      ?gebouw\n        a sor:Gebouw;\n        geo:hasGeometry/geo:asWKT ?vlak.\n      ?gebouwzone\n        a sor:Gebouwzone;\n        kad:gebouwtype/skos:prefLabel ?typeGebouw;\n        sor:hoortBij ?verblijfsobject.\n      filter(?typeGebouw in (\n        'gemeentehuis'@nl,\n        'kerk'@nl,\n        'klooster, abdij'@nl,\n        'school'@nl,\n        'ziekenhuis'@nl,\n        'ziekenhuiscomplex'@nl,\n        'zwembad'@nl\n      ))\n      ?verblijfsobject\n        a sor:Verblijfsobject;\n        sor:gebruiksdoel/skos:prefLabel ?gebruiksdoel;\n        sor:maaktDeelUitVan ?gebouw.\n    }\n    group by ?gebouw ?gebruiksdoel\n    order by ?gebouw ?gebruiksdoel\n  }\n}\ngroup by ?gebouw\n",
+    "execution_result_sample": {
+        "error": "Execution failed: 400 Client Error: The variable '?vlak' cannot be bound more than once. for url: https://api.labs.kadaster.nl/datasets/kadaster/kkg/sparql"
+    }
+}

@@ -1,0 +1,151 @@
+{
+    "meta": {
+        "id": "62cd581e0d58f77720f37589",
+        "name": "aantal-windturbines",
+        "description": "Het aantal windturbines in Nederland, volgens de verschillende basisregistraties.",
+        "owner": "Data Science Team (DST)",
+        "visualization": "Gallery"
+    },
+    "prompt_context": {
+        "prefixes": [
+            {
+                "prefixLabel": "graph",
+                "iri": "https://brt.basisregistraties.overheid.nl/graph/",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "brt",
+                "iri": "https://brt.basisregistraties.overheid.nl/def/top10nl#",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "dcatap",
+                "iri": "http://data.europa.eu/r5r/",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "time",
+                "iri": "http://wwww.w3.org/TR/owl-time/#",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "adms",
+                "iri": "http://www.w3.org/ns/adms#",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "sd",
+                "iri": "http://www.w3.org/ns/sparql-service-description#",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "nen3610",
+                "iri": "http://modellen.geostandaarden.nl/def/nen3610#",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "nen3610-kkg",
+                "iri": "https://modellen.kkg.kadaster.nl/def/nen3610#",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "nen3160-shape",
+                "iri": "https://modellen.kkg.kadaster.nl/nen3610/id/shape/",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "nen3610-sh",
+                "iri": "http://modellen.geostandaarden.nl/nen3610/id/shape/",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "imxgeo",
+                "iri": "http://modellen.geostandaarden.nl/def/imx-geo#",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "pc6",
+                "iri": "https://modellen.kkg.kadaster.nl/cbs/wijken-buurten/def/pc6cijfers#",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "bgt",
+                "iri": "https://bgt.basisregistraties.overheid.nl/def/bgt#",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "brk",
+                "iri": "https://brk.basisregistraties.overheid.nl/def/imkad#",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "bg",
+                "iri": "http://brk.basisregistraties.overheid.nl/def/bg#",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "cbs-kkg",
+                "iri": "https://modellen.kkg.kadaster.nl/cbs/def/wijken-buurten#",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "ont",
+                "iri": "https://modellen.kkg.kadaster.nl/def/imxgeo-ext",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "ext",
+                "iri": "https://modellen.kkg.kadaster.nl/def/imxgeo-ext#",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "shape-kkg",
+                "iri": "https://modellen.kkg.kadaster.nl/imxgeo-ext/id/shape/",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "ext-col",
+                "iri": "https://data.kkg.kadaster.nl/imxgeo-ext/id/collection/",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "ext-con",
+                "iri": "https://modellen.kkg.kadaster.nl/imxgeo-ext/id/",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "imgeo-con",
+                "iri": "http://bgt.basisregistraties.overheid.nl/imgeo/id/concept/",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "bgt-con",
+                "iri": "http://bgt.basisregistraties.overheid.nl/id/concept/",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "bag-con",
+                "iri": "http://bag.basisregistraties.overheid.nl/id/concept/",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "brt-con",
+                "iri": "http://brt.basisregistraties.overheid.nl/id/concept/",
+                "scope": "local"
+            },
+            {
+                "prefixLabel": "brk-con",
+                "iri": "http://brk.basisregistraties.overheid.nl/id/concept/",
+                "scope": "local"
+            }
+        ],
+        "dataset_name": "Basisregistratie Topografie (BRT) - Top10NL"
+    },
+    "input_natural_language": "Het aantal windturbines in Nederland, volgens de verschillende basisregistraties.",
+    "output_sparql": "prefix bgt: <https://bgt.basisregistraties.overheid.nl/def/bgt#>\nprefix nen3610: <http://modellen.geostandaarden.nl/def/nen3610#>\nprefix foaf: <http://xmlns.com/foaf/0.1/>\nprefix brt: <https://brt.basisregistraties.overheid.nl/def/top10nl#>\nprefix brt-con: <http://brt.basisregistraties.overheid.nl/id/concept/>\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n\n\nselect ?widget {\n  \n   \n      service <https://api.labs.kadaster.nl/datasets/bgt/lv/services/bgtlv/sparql> \n  #service <https://api.labs.kadaster.nl/datasets/bgt/lv/sparql>\n  {\n        {\n          \n          select (count(distinct ?registratie) as ?bgt) {\n  \n           ?registratie  bgt:type <http://definities.geostandaarden.nl/imgeo/id/begrip/Windturbine>.\n           ?registratie nen3610:registratiegegevens ?reg.  \n     \n             filter not exists { ?reg nen3610:eindRegistratie []. }\n       \n      }\n    }\n        }\n \n  {\n    select (count(distinct ?brt2) as ?brt) {\n      ?brt2\n       brt:typeGebouw brt-con:Windturbine.\n    }\n  }\n  bind(strdt(concat(\n        '<h1>Hoe veel windturbines staan er in Nederland?</h1>',\n        '<h4>Volgens de BGT: ',replace(str(?bgt),'[0-9](?=(?:[0-9]{3})+(?![0-9]))','$0.'),'</h4>',\n        '<h4>Volgens de BRT: ',replace(str(?brt),'[0-9](?=(?:[0-9]{3})+(?![0-9]))','$0.'),'</h4>'),rdf:HTML) as ?widget)\n}",
+    "execution_result_sample": [
+        {
+            "widget": "<h1>Hoe veel windturbines staan er in Nederland?</h1><h4>Volgens de BGT: 3.267</h4><h4>Volgens de BRT: 0</h4>"
+        }
+    ]
+}

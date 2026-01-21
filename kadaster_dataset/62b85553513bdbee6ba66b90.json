@@ -1,0 +1,16 @@
+{
+    "meta": {
+        "id": "62b85553513bdbee6ba66b90",
+        "name": "religieuze-gebouwen-1",
+        "description": "",
+        "owner": "Data Science Team (DST)",
+        "visualization": "gchart"
+    },
+    "prompt_context": {
+        "prefixes": [],
+        "dataset_name": "Unknown"
+    },
+    "input_natural_language": "",
+    "output_sparql": "prefix brt: <https://brt.basisregistraties.overheid.nl/top10nl2/def/>\nprefix skos: <http://www.w3.org/2004/02/skos/core#>\nprefix typeGebouw: <https://brt.basisregistraties.overheid.nl/top10nl2/id/typeGebouw/>\nselect ?cLabel (count(?i) as ?n) {\n  ?i brt:typeGebouw ?c.\n  bind(strafter(str(?c), 'typeGebouw/') as ?cLabel)\n  filter(?c in (typeGebouw:kerk, typeGebouw:moskee, typeGebouw:overigReligieusGebouw, typeGebouw:synagoge))\n}\ngroup by ?cLabel\norder by desc(?n)\n\n",
+    "execution_result_sample": []
+}

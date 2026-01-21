@@ -1,0 +1,16 @@
+{
+    "meta": {
+        "id": "62b84899513bdbee6ba5defb",
+        "name": "igo-risicoobjecten-per-gemeente",
+        "description": "",
+        "owner": "Data Science Team (DST)",
+        "visualization": "geo"
+    },
+    "prompt_context": {
+        "prefixes": [],
+        "dataset_name": "Unknown"
+    },
+    "input_natural_language": "",
+    "output_sparql": "prefix bag: <http://bag.basisregistraties.overheid.nl/def/bag#>\nprefix brt: <http://brt.basisregistraties.overheid.nl/def/top10nl#>\nprefix geo: <http://www.opengis.net/ont/geosparql#>\nprefix kad: <https://data.kkg.kadaster.nl/kad/model/def/>\nprefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nprefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nprefix skos: <http://www.w3.org/2004/02/skos/core#>\nprefix sor: <https://data.kkg.kadaster.nl/sor/model/def/>\nprefix wbk: <https://data.labs.kadaster.nl/cbs/wbk/vocab/>\nselect distinct ?punt ?puntLabel ?vlak {\n  ?gemeente a wbk:Gemeente;\n            rdfs:label ?gemeenteNaam.\n  ?wijk a wbk:Wijk;\n        rdfs:label ?wijkNaam;\n        geo:sfWithin ?gemeente.\n  ?buurt a wbk:Buurt;\n         geo:sfWithin ?wijk;\n         rdfs:label ?buurtNaam.\n  ?gebouw a sor:Gebouw;\n         geo:sfWithin ?buurt .\n  ?gebouwzone a sor:Gebouwzone;\n              (kad:gebouwtype/skos:prefLabel) ?typeGebouw;\n               sor:hoortBij ?verblijfsobject.\n  ?verblijfsobject a sor:Verblijfsobject;\n                   geo:hasGeometry ?puntGeometerie;\n                   sor:hoofdadres ?nummeraanduiding;\n                   sor:maaktDeelUitVan ?gebouw;\n                   sor:oppervlakte ?oppervlakte.\n  ?puntGeometerie geo:asWKT ?punt;\n          rdfs:isDefinedBy <http://bag.basisregistraties.overheid.nl/def/bag#>.\n  ?nummeraanduiding\n    a sor:Nummeraanduiding;\n    sor:huisnummer ?huisnummer;\n    sor:ligtAan ?straat;\n    sor:postcode ?postcode.\n  ?straat skos:prefLabel ?straatNaam .\n  BIND(CONCAT(STR(?straatNaam), \" \", STR(?huisnummer), \", \", STR(?postcode)) AS ?adres)\n  ?gebouw a sor:Gebouw;\n          geo:hasGeometry ?geometrie .\n  ?geometrie geo:asWKT ?vlak;\n          rdfs:isDefinedBy <http://bag.basisregistraties.overheid.nl/def/bag#>.\n  bind(strdt(concat(\n        '<h4>',str(?typeGebouw),'</h4>',\n        '<p>Address: <a href=\"',str(?verblijfsobject),'\" target=\"_blank\">',str(?adres),'</a>',\n        '<br>Oppervlakte: ',replace(str(?oppervlakte),'[0-9](?=(?:[0-9]{3})+(?![0-9]))','$0,'),'</p>'),rdf:HTML) as ?puntLabel)\n}\nlimit 100",
+    "execution_result_sample": []
+}

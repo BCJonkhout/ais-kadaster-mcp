@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ais-kadaster-mcp"
+version = "0.1.0"
+description = "Kadaster query catalog + SPARQL execution extractor script"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "requests>=2.31.0",
+]
+
+[project.scripts]
+kadaster-extract = "kadaster:main"
+
+[tool.setuptools]
+py-modules = ["kadaster"]
+
+[tool.uv]
+dev-dependencies = [
+  "ruff>=0.5.0",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"

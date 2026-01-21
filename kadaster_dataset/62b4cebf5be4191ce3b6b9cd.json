@@ -1,0 +1,18 @@
+{
+    "meta": {
+        "id": "62b4cebf5be4191ce3b6b9cd",
+        "name": "grootste-gemeenten",
+        "description": "",
+        "owner": "Basisregistratie Adressen en Gebouwen (BAG)",
+        "visualization": "gchart"
+    },
+    "prompt_context": {
+        "prefixes": [],
+        "dataset_name": "Unknown"
+    },
+    "input_natural_language": "",
+    "output_sparql": "prefix bag: <https://bag2.basisregistraties.overheid.nl/bag/def/>\nprefix bif: <http://www.openlinksw.com/schemas/bif#>\nprefix geo: <http://www.opengis.net/ont/geosparql#>\nprefix geof: <http://www.opengis.net/def/function/geosparql/>\nprefix skos: <http://www.w3.org/2004/02/skos/core#>\nprefix status: <https://bag2.basisregistraties.overheid.nl/bag/id/status/>\nprefix uom: <http://www.opengis.net/def/uom/OGC/1.0/>\n\nselect ?gemeenteNaam (sample(?gemeenteOppervlakte0) as ?gemeenteOppervlakte) {\n  ?gemeente\n    a bag:WoonplaatsRegistratie;\n    skos:prefLabel ?gemeenteNaam;\n    bag:geometrie ?rd1;\n    bag:status status:woonplaatsAangewezen.\n  bind(bif:ST_Transform(?rd1, 4326) as ?wgs1)\n  bind(geof:envelope(?wgs1) as ?gemeenteBoundingBox)\n  bind('^BOX\\\\(([0-9]*\\\\.[0-9]*)\\\\s([0-9]*\\\\.[0-9]*),([0-9]*\\\\.[0-9]*)\\\\s([0-9]*\\\\.[0-9]*)\\\\)$' as ?regex)\n  bind(replace(str(?gemeenteBoundingBox), ?regex, '$1') as ?x1)\n  bind(replace(str(?gemeenteBoundingBox), ?regex, '$2') as ?y1)\n  bind(replace(str(?gemeenteBoundingBox), ?regex, '$3') as ?x2)\n  bind(replace(str(?gemeenteBoundingBox), ?regex, '$4') as ?y2)\n  bind(geof:distance(\n    strdt(concat('Point (',str(?x1),' ',str(?y1),')'),geo:wktLiteral),\n    strdt(concat('Point (',str(?x2),' ',str(?y1),')'),geo:wktLiteral),\n    uom:metre) as ?x)\n  bind(geof:distance(\n    strdt(concat('Point (',str(?x1),' ',str(?y1),')'),geo:wktLiteral),\n    strdt(concat('Point (',str(?x1),' ',str(?y2),')'),geo:wktLiteral),\n    uom:metre) as ?y)\n  bind(?x * ?y as ?gemeenteOppervlakte0)\n}\ngroup by ?gemeenteNaam\norder by desc(?gemeenteOppervlakte)\nlimit 15",
+    "execution_result_sample": {
+        "error": "Execution failed: 400 Client Error: Unknown function <http://www.openlinksw.com/schemas/bif#ST_Transform> for url: https://api.labs.kadaster.nl/datasets/kadaster/kkg/sparql"
+    }
+}
