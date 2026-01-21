@@ -80,6 +80,17 @@ uv run python -m ipykernel install --user --name ais-kadaster-mcp --display-name
 uv run python -m notebook
 ```
 
+## Dataset Findings
+
+From the current scrape (365 queries), `execution_result_sample` outcomes are roughly:
+
+- `non_empty` (SELECT with results): 41
+- `empty` (SELECT with no bindings): 249
+- `error` (timeouts/HTTP errors): 46
+- `rdf` (Turtle graph results, e.g. CONSTRUCT/DESCRIBE): 24
+- `boolean` (ASK): 1
+- `unknown`: 4
+
 ## Notes
 
 See `POC.md` for the current proof-of-concept approach.
