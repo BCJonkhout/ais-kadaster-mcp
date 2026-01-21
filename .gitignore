@@ -8,3 +8,5 @@ __pycache__/
 kadaster_dataset/
 kadaster_dataset2/
 kadaster_dataset3/
+
+.env
