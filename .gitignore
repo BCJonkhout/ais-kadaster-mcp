@@ -5,4 +5,4 @@ __pycache__/
 .pytest_cache/
 
 # Output from kadaster.py
-kadaster_dataset3/
+kadaster_dataset/
