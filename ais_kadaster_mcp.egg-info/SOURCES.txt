@@ -1,5 +1,4 @@
 README.md
-kadaster.py
 pyproject.toml
 ais_kadaster_mcp.egg-info/PKG-INFO
 ais_kadaster_mcp.egg-info/SOURCES.txt
@@ -7,3 +6,7 @@ ais_kadaster_mcp.egg-info/dependency_links.txt
 ais_kadaster_mcp.egg-info/entry_points.txt
 ais_kadaster_mcp.egg-info/requires.txt
 ais_kadaster_mcp.egg-info/top_level.txt
+scripts/__init__.py
+scripts/collect_non_empty.py
+scripts/collect_rdf.py
+scripts/kadaster.py

@@ -1,3 +1,5 @@
+"""Kadaster Labs query catalog + SPARQL execution extractor."""
+
 import json
 import os
 import re
@@ -10,7 +12,7 @@ import requests
 
 # Configuration
 BASE_API_URL = os.getenv("KADASTER_BASE_API_URL", "https://data.labs.kadaster.nl/_api")
-OUTPUT_DIR = os.getenv("KADASTER_OUTPUT_DIR", "kadaster_dataset")
+OUTPUT_DIR = os.getenv("KADASTER_OUTPUT_DIR", os.path.join("data", "kadaster_dataset"))
 USER_AGENT = os.getenv(
     "KADASTER_USER_AGENT",
     "KadasterDataExtractor/1.0 (Educational/Research Purpose)",

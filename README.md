@@ -1,10 +1,10 @@
 # ais-kadaster-mcp
 
-Small Python repo containing `kadaster.py`, which crawls the Kadaster Labs query catalog, fetches query details, optionally executes the SPARQL, and writes JSON examples to disk.
+Small Python repo containing `scripts/kadaster.py`, which crawls the Kadaster Labs query catalog, fetches query details, optionally executes the SPARQL, and writes JSON examples to disk.
 
 ## Prereqs
 
-- Python (recommended: `3.11`, see `.python-version`)
+- Python (recommended: `3.11+`, see `.python-version`)
 - `uv` installed: https://docs.astral.sh/uv/
 
 ## Setup
@@ -21,12 +21,19 @@ Optional: copy `.env.example` to `.env` and run with:
 uv run --env-file .env kadaster-extract
 ```
 
+To build compacted bundles used by the notebooks:
+
+```bash
+python3 scripts/collect_non_empty.py
+python3 scripts/collect_rdf.py
+```
+
 ## Run
 
 Run the script directly:
 
 ```bash
-uv run python kadaster.py
+uv run python scripts/kadaster.py
 ```
 
 Or run via the installed console script:
@@ -35,16 +42,16 @@ Or run via the installed console script:
 uv run kadaster-extract
 ```
 
-Output is written to `kadaster_dataset/` (gitignored).
+Output is written to `data/kadaster_dataset/` (gitignored).
 
 ## Configuration
 
-Defaults live at the top of `kadaster.py` (e.g. `OUTPUT_DIR`, `DELAY_BETWEEN_REQUESTS`, `SPARQL_ENDPOINT`).
+Defaults live at the top of `scripts/kadaster.py` (e.g. `OUTPUT_DIR`, `DELAY_BETWEEN_REQUESTS`, `SPARQL_ENDPOINT`).
 
 You can override defaults with env vars:
 
 ```bash
-KADASTER_OUTPUT_DIR=kadaster_dataset \
+KADASTER_OUTPUT_DIR=data/kadaster_dataset \
 KADASTER_BASE_API_URL=https://data.labs.kadaster.nl/_api \
 KADASTER_SPARQL_ENDPOINT=https://data.labs.kadaster.nl/_api/datasets/kadaster/kkg/services/kkg/sparql \
 KADASTER_SPARQL_REFERRER=https://data.labs.kadaster.nl/kadaster/kkg/sparql \
@@ -79,6 +86,8 @@ uv sync
 uv run python -m ipykernel install --user --name ais-kadaster-mcp --display-name "ais-kadaster-mcp"
 uv run python -m notebook
 ```
+
+There is also a few-shot selection notebook at `notebooks/fewshot_judge.ipynb` that can use an OpenAI-key-backed LLM judge to score candidates and export `data/fewshot_topk.json`.
 
 ## Dataset Findings
 

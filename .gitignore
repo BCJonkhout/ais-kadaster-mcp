@@ -3,9 +3,16 @@ __pycache__/
 *.py[cod]
 .ruff_cache/
 .pytest_cache/
+*.egg-info/
+.ipynb_checkpoints/
 
 # Output from kadaster.py
-kadaster_dataset/
+data/kadaster_dataset/
+
+# Generated bundles
+data/kadaster_non_empty_results.json
+data/kadaster_rdf_results.json
+data/fewshot_topk.json
 kadaster_dataset2/
 kadaster_dataset3/
 

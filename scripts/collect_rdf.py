@@ -49,7 +49,7 @@ def compact_rdf_execution_result(execution_result: dict[str, Any], max_chars: in
 
 
 def main() -> int:
-    source_dir = Path(os.getenv("KADASTER_OUTPUT_DIR", "kadaster_dataset"))
+    source_dir = Path(os.getenv("KADASTER_OUTPUT_DIR", os.path.join("data", "kadaster_dataset")))
     max_chars = int(os.getenv("KADASTER_RDF_TEXT_LIMIT", "20000"))
 
     if not source_dir.exists():
@@ -90,7 +90,8 @@ def main() -> int:
         "items": items,
     }
 
-    out_path = Path("kadaster_rdf_results.json")
+    out_path = Path(os.getenv("KADASTER_RDF_OUT", os.path.join("data", "kadaster_rdf_results.json")))
+    out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
     print(
         f"[+] Wrote {out_path} with {len(items)} RDF results "
@@ -101,4 +102,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

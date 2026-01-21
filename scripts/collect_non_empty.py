@@ -55,7 +55,7 @@ def compact_execution_result(execution_result: dict[str, Any], max_bindings: int
 
 
 def main() -> int:
-    source_dir = Path(os.getenv("KADASTER_OUTPUT_DIR", "kadaster_dataset"))
+    source_dir = Path(os.getenv("KADASTER_OUTPUT_DIR", os.path.join("data", "kadaster_dataset")))
     max_bindings = int(os.getenv("KADASTER_BINDINGS_LIMIT", "25"))
     if not source_dir.exists():
         print(f"[!] Source dir not found: {source_dir}")
@@ -95,7 +95,8 @@ def main() -> int:
         "items": items,
     }
 
-    out_path = Path("kadaster_non_empty_results.json")
+    out_path = Path(os.getenv("KADASTER_NON_EMPTY_OUT", os.path.join("data", "kadaster_non_empty_results.json")))
+    out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
     print(
         f"[+] Wrote {out_path} with {len(items)} non-empty results "

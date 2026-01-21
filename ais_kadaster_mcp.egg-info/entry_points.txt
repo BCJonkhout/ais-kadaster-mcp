@@ -1,2 +1,2 @@
 [console_scripts]
-kadaster-extract = kadaster:main
+kadaster-extract = scripts.kadaster:main
